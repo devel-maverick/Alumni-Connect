@@ -5,11 +5,13 @@ const connectDB = require("./DataBase/config");
 connectDB();
 const cors = require("cors");
 const clubRoutes = require("./Routes/Clubs");
+const opportunityRoutes = require("./Routes/opportunity");
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 app.use("/clubs", clubRoutes);
+app.use("/opportunities", opportunityRoutes);
 
 const port = 3000
 
