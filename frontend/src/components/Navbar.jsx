@@ -1,12 +1,20 @@
-import { Link, useLocation } from 'react-router-dom';
-import { LogOut, GraduationCap } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { LogOut, GraduationCap } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
 
+  // Get user + logout from Zustand
+  const { authUser, logout } = useAuthStore();
+
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-lg">
@@ -26,44 +34,39 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* CENTER — Nav Links (Right Pushed) */}
+          {/* CENTER — Nav Links */}
           <div className="hidden md:flex items-center space-x-1 ml-auto mr-6">
             <Link
               to="/"
               className={`px-3 py-2 rounded-lg transition-all ${
-                isActive('/')
-                  ? 'bg-blue-50 text-blue-600 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                isActive("/") ? "bg-blue-50 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               Home
             </Link>
+
             <Link
               to="/opportunities"
               className={`px-3 py-2 rounded-lg transition-all ${
-                isActive('/opportunities')
-                  ? 'bg-blue-50 text-blue-600 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                isActive("/opportunities") ? "bg-blue-50 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               Opportunities
             </Link>
+
             <Link
               to="/clubs-culture"
               className={`px-3 py-2 rounded-lg transition-all ${
-                isActive('/clubs-culture')
-                  ? 'bg-blue-50 text-blue-600 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                isActive("/clubs-culture") ? "bg-blue-50 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               Clubs & Culture
             </Link>
+
             <Link
               to="/connect"
               className={`px-3 py-2 rounded-lg transition-all ${
-                isActive('/connect')
-                  ? 'bg-blue-50 text-blue-600 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                isActive("/connect") ? "bg-blue-50 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               Connect
@@ -72,23 +75,26 @@ export default function Navbar() {
 
           {/* RIGHT — Profile / Login */}
           <div className="hidden md:flex items-center space-x-3">
-            {user ? (
+            {authUser ? (
               <>
+                {/* PROFILE BUTTON */}
                 <Link
                   to="/profile"
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all group"
                 >
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
                     <span className="text-white font-semibold text-sm">
-                      {user.name.charAt(0).toUpperCase()}
+                      {authUser.fullName?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <span className="text-sm font-medium text-gray-700 hidden lg:inline">
-                    {user.name.split(' ')[0]}
+                    {authUser.fullName?.split(" ")[0]}
                   </span>
                 </Link>
+
+                {/* LOGOUT BUTTON */}
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                   title="Logout"
                 >
@@ -107,19 +113,19 @@ export default function Navbar() {
 
           {/* MOBILE */}
           <div className="md:hidden flex items-center space-x-2">
-            {user ? (
+            {authUser ? (
               <>
                 <Link to="/profile">
                   <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
                     <span className="text-white font-semibold text-xs">
-                      {user.name.charAt(0).toUpperCase()}
+                      {authUser.fullName?.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 </Link>
+
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="p-2 text-gray-600 hover:text-red-600"
-                  title="Logout"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
