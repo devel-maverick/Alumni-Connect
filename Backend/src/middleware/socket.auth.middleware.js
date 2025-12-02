@@ -25,7 +25,7 @@ export const socketAuthMiddleware = async (socket, next) => {
       return next(new Error("user not found"));
     }
     socket.user = user;
-    socket.userId = user._id.toString();
+    socket.userId = user.id.toString();
     console.log(`Socket authenticated: ${user.fullName}`);
     next();
   } catch (err) {

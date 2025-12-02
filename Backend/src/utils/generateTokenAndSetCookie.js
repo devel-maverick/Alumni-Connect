@@ -11,6 +11,6 @@ export const generateTokenAndSetCookie = (res, userId) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   };
 
-  res.cookie("token", token, cookieOptions);
+  res.cookie("jwt", token, cookieOptions);
   return token;
 };

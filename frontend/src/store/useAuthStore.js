@@ -14,10 +14,9 @@ export const useAuthStore = create((set,get)=>({
     checkAuth: async()=>{
         try{
             const res=await axiosInstance.get("/auth/check");
-            set({authUser:res.data.user});
+            set({authUser:res.data});
             get().connectSocket()
         }catch(err){
-            console.log("Auth check error:", err);
             set({authUser:null});
 
         }
@@ -30,11 +29,11 @@ export const useAuthStore = create((set,get)=>({
         set({isSigningUp:true})
         try{
         const res=await axiosInstance.post("/auth/signup",data)
-        set({authUser:res.data.user})
+        set({authUser:res.data})
         toast.success("Account created successfully!")
         get().connectSocket()
         }catch(err){
-            toast.error(err.response?.data?.message || "Signup failed")
+            toast.error(err.response.data.message)
         }
         finally{
             set({isSigningUp:false})
@@ -44,11 +43,11 @@ export const useAuthStore = create((set,get)=>({
         set({isLoggingIn:true})
         try{
         const res=await axiosInstance.post("/auth/login",data)
-        set({authUser:res.data.user})
+        set({authUser:res.data})
         toast.success("Logged in successfully")
         get().connectSocket()
         }catch(err){
-            toast.error(err.response?.data?.message || "Login failed")
+            toast.error(err.response.data.message)
         }
         finally{
             set({isLoggingIn:false})
@@ -58,20 +57,24 @@ export const useAuthStore = create((set,get)=>({
         try{
         await axiosInstance.post("/auth/logout")
         set({authUser:null})
-        toast.success("Logged out successfully")
+        toast.success("Logged Out successfully")
         get().disconnectSocket()
         }catch(err){
-            toast.error(err.response?.data?.message || "Logout failed")
+            toast.error(err.response.data.message)
         }
+        finally{
+            set({authUser:null})
+        }
+
     },
     updateProfile:async(data)=>{
         try{
             const res=await  axiosInstance.put("/auth/update-profile",data)
-            set({authUser:res.data.user})
-            toast.success("Profile updated successfully")
+            set({authUser:res.data})
+            toast.success("Profile updated Successfully")
         }catch(err){
             console.log("error in update profile",err)
-            toast.error(err.response?.data?.message || "Update failed")
+            toast.error(error.response.data.message)
 
         }
     }
